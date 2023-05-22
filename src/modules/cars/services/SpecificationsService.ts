@@ -1,24 +1,29 @@
 import { Specification } from "../models/Specification";
 import { SpecificationsRepository } from "../repositories/SpecificationsRepository";
 
-const specificationsRepository = new SpecificationsRepository();
-
 class SpecificationService {
+  constructor(private specificationsRepository: SpecificationsRepository) {}
   create(specification: Specification) {
-    specificationsRepository.create(specification);
-  }
+    const specificationAlreadyExists = this.specificationsRepository.findByName(
+      specification.name
+    );
+    if (specificationAlreadyExists) {
+      throw new Error("Specification Already Exists.");
+    }
 
+    this.specificationsRepository.create(specification);
+  }
   findByName(name: string): Specification {
     const specificationAlreadyExists =
-      specificationsRepository.findByName(name);
+      this.specificationsRepository.findByName(name);
     if (!specificationAlreadyExists) {
       throw new Error("Specification not found.");
     }
     return specificationAlreadyExists;
   }
 
-  list(): Specification[]{
-    const listSpecifications = specificationsRepository.list();
+  list(): Specification[] {
+    const listSpecifications = this.specificationsRepository.list();
     return listSpecifications;
   }
 }
