@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Specification } from "../../models/Specification";
+import { Specification } from "../../entities/Specification";
 import { SpecificationService } from "../../services/SpecificationsService";
 
 class SpecificationController {

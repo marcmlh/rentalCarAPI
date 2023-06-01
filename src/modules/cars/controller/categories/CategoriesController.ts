@@ -1,16 +1,18 @@
 import { Request, Response } from "express";
 import { CategoriesService } from "../../services/CategoriesService";
+import { Category } from "../../entities/Category";
 
 class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
-  create(request: Request, response: Response): Response {
+  async create(request: Request, response: Response): Promise<Response> {
     const { name, description } = request.body;
 
-    this.categoriesService.create(name, description);
+    const category = await this.categoriesService.create(name, description);
 
-    return response.status(201).send();
+    return response.status(201).json({data: category});
   }
 
+  /*
   list(request: Request, response: Response): Response {
     const listCategories = this.categoriesService.list();
     return response.status(200).json({ data: listCategories });
@@ -24,13 +26,14 @@ class CategoriesController {
     return response.status(200).json({ data: category });
   }
 
-  import(request: Request, response: Response): Response {
+  async import(request: Request, response: Response): Promise<Response> {
     const { file } = request;
 
-    this.categoriesService.import(file);
-
-    return response.status(200).send();
+    const importCategories = await this.categoriesService.import(file);
+    
+    return response.status(200).json({data: importCategories});
   }
+  */
 }
 
 export { CategoriesController };

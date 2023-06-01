@@ -1,0 +1,33 @@
+version: "3.7"
+
+services:
+  database_rentalscar:
+    image: postgres
+    container_name: database_rentalscar
+    restart: always
+    ports:
+      - 5434:5432
+    environment:
+      - POSTGRES_USER=marcelo
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=rentalscar
+    volumes:
+      - pgdata:/data/postgres
+  app:
+    build: .
+    container_name: rentalscar
+    ports:
+      - 3334:3333
+    volumes:
+      - .:/usr/app
+    links:
+      - database_rentalscar
+    depends_on:
+      - database_rentalscar
+
+      
+
+
+volumes:
+  pgdata:
+    driver: local

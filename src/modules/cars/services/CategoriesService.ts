@@ -1,5 +1,5 @@
 // A Service é a segunda camada em nossa Cronicas de Narnia na API, é aqui onde as regras de negócio são implementadas, e por regra de negócio você entende o que é? To perguntando pra você. Ela recebe as informações das rotas e repassam/comunicam-se com os repositórios. Começamos definindo os nossos métodos.
-import { Category } from "../models/Category";
+import { Category } from "../entities/Category";
 import { parse as csvParse } from "csv-parse";
 import fs from "fs";
 import { CategoriesRepository } from "../repositories/CategoriesRepository";
@@ -7,21 +7,21 @@ import { CategoriesRepository } from "../repositories/CategoriesRepository";
 class CategoriesService {
   constructor(private categoryRepository: CategoriesRepository) {}
 
-  create(name: string, description: string) {
-    const category = new Category();
-    Object.assign(category, { name, description });
-
-    const categoryAlreadyExists = this.categoryRepository.findByName(
-      category.name
+  async create(name: string, description: string): Promise<Category> {
+    const categoryAlreadyExists = await this.categoryRepository.findByName(
+      name
     );
 
     if (categoryAlreadyExists) {
       throw new Error("Category Already Exists.");
     }
 
-    this.categoryRepository.create(category);
+    const category = await this.categoryRepository.create(name, description);
+    
+    return category
   }
 
+  /*
   findByName(name: string): Category {
     const categoryAlreadyExists = this.categoryRepository.findByName(name);
 
@@ -39,7 +39,7 @@ class CategoriesService {
 
   loadCategories(file: Express.Multer.File) {
     // Transofrmação do arquivo e adicionar no banco   -- ESPERAR
-    var minhaPromise = new Promise<Category[]>((resolve, reject) => {
+    return new Promise<Category[]>((resolve, reject) => {
       // VARIÁS COISAS ACONTECENDO
       const stream = fs.createReadStream(file.path);
       const parseFile = csvParse();
@@ -47,32 +47,35 @@ class CategoriesService {
       stream.pipe(parseFile);
 
       const importCategories: Category[] = [];
-      parseFile.on("data", async (line) => {
-        const [name, description] = line;
+      parseFile
+        .on("data", async (line) => {
+          const [name, description] = line;
 
-        const categoryAlreadyExists = this.categoryRepository.findByName(name);
+          const categoryAlreadyExists =
+            this.categoryRepository.findByName(name);
 
-        if (!categoryAlreadyExists) {
-          const category = new Category();
-          Object.assign(category, { name, description });
-          this.categoryRepository.create(category);
-          importCategories.push(category);
-        }
-      })
-      .on("end", ()=>{
-        resolve(importCategories);
-      })
-      .on("error", (err) => {
-        reject(err);
-      });
+          if (!categoryAlreadyExists) {
+            const category = new Category();
+            Object.assign(category, { name, description });
+            this.categoryRepository.create(category);
+            importCategories.push(category);
+          }
+        })
+        .on("end", () => {
+          fs.promises.unlink(file.path);
+          resolve(importCategories);
+        })
+        .on("error", (err) => {
+          reject(err);
+        });
     });
-
-    return minhaPromise
   }
 
-  async import(file: Express.Multer.File){
-  await this.loadCategories(file);
+  async import(file: Express.Multer.File): Promise<Category[]> {
+    const importCategories = await this.loadCategories(file);
+    return importCategories;
   }
+  */
 }
 
 export { CategoriesService };
