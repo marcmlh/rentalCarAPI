@@ -2,12 +2,14 @@
 
 import { Router } from "express";
 import multer from "multer";
-import { categoriesController } from "../modules/cars/controller/categories";
+import { CategoriesController } from "../modules/cars/controller/categories/CategoriesController";
 
 const categoriesRoutes = Router();
 const upload = multer({
   dest: "./tmp",
 })
+
+const categoriesController = new CategoriesController();
 
 categoriesRoutes.post("/", async (request, response) => {
   return await categoriesController.create(request, response);
@@ -19,7 +21,7 @@ categoriesRoutes.post("/", async (request, response) => {
 
 categoriesRoutes.get("/", async (request, response) => {
   return await categoriesController.list(request, response);
-});
+});``
  
 categoriesRoutes.get("/findByName", async (request, response) => {
   return await categoriesController.findByName(request, response);

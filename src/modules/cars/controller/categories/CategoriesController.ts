@@ -1,27 +1,29 @@
 import { Request, Response } from "express";
 import { CategoriesService } from "../../services/CategoriesService";
 import { Category } from "../../entities/Category";
+import { container } from "tsyringe";
 
 class CategoriesController {
-  constructor(private categoriesService: CategoriesService) {}
-
   async create(request: Request, response: Response): Promise<Response> {
     const { name, description } = request.body;
 
-    const category = await this.categoriesService.create(name, description);
+    const categoriesService = container.resolve(CategoriesService);
+
+    const category = await categoriesService.create(name, description);
 
     return response.status(201).json({ data: category });
   }
 
   async list(request: Request, response: Response): Promise<Response> {
-    const listCategories = await this.categoriesService.list();
+    const categoriesService = container.resolve(CategoriesService);
+    const listCategories = await categoriesService.list();
     return response.status(200).json({ data: listCategories });
   }
 
   async findByName(request: Request, response: Response): Promise<Response> {
     const { name } = request.body;
-
-    const category = await this.categoriesService.findByName(name);
+    const categoriesService = container.resolve(CategoriesService);
+    const category = await categoriesService.findByName(name);
 
     return response.status(200).json({ data: category });
   }

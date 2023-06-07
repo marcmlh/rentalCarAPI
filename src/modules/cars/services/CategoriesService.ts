@@ -4,9 +4,11 @@ import { parse as csvParse } from "csv-parse";
 import fs from "fs";
 import { CategoriesRepository } from "../repositories/CategoriesRepository";
 import { AppError } from "../../../helpers/AppError";
+import { inject, injectable } from "tsyringe";
 
+@injectable()
 class CategoriesService {
-  constructor(private categoryRepository: CategoriesRepository) {}
+  constructor(@inject("CategoriesRepository") private categoryRepository: CategoriesRepository) {}
 
   async create(name: string, description: string): Promise<Category> {
     const categoryAlreadyExists = await this.categoryRepository.findByName(

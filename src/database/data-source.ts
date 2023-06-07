@@ -1,6 +1,8 @@
 import { DataSource } from "typeorm";
 import { Categories1685638103459 } from "./migrations/1685638103459-Categories";
 import { Category } from "../modules/cars/entities/Category";
+import { Specification } from "../modules/cars/entities/Specification";
+import { Specification1686154668645 } from "./migrations/1686154668645-Specification";
 
 export const dataSource = new DataSource({
   type: "postgres",
@@ -8,8 +10,8 @@ export const dataSource = new DataSource({
   username: "marcelo",
   password: "1234",
   database: "rentalscar",
-  entities: [Category],
-  migrations: [Categories1685638103459],
+  entities: [Category, Specification],
+  migrations: [Categories1685638103459, Specification1686154668645],
 });
 
 /*
