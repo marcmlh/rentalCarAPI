@@ -13,19 +13,17 @@ categoriesRoutes.post("/", async (request, response) => {
   return await categoriesController.create(request, response);
 });
 
-/*
-categoriesRoutes.post("/import", upload.single("file"), (request, response) => {
-  return categoriesController.import(request, response);
-});
+// categoriesRoutes.post("/import", upload.single("file"), async (request, response) => {
+//   return await categoriesController.import(request, response);
+// });
 
-categoriesRoutes.get("/", (request, response) => {
-  return categoriesController.list(request, response);
+categoriesRoutes.get("/", async (request, response) => {
+  return await categoriesController.list(request, response);
 });
-
-categoriesRoutes.get("/findByName", (request, response) => {
-  return categoriesController.findByName(request, response);
+ 
+categoriesRoutes.get("/findByName", async (request, response) => {
+  return await categoriesController.findByName(request, response);
 });
-*/
 
 
 export { categoriesRoutes };

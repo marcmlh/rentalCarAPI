@@ -3,27 +3,32 @@ import { SpecificationsRepository } from "../repositories/SpecificationsReposito
 
 class SpecificationService {
   constructor(private specificationsRepository: SpecificationsRepository) {}
-  create(specification: Specification) {
-    const specificationAlreadyExists = this.specificationsRepository.findByName(
-      specification.name
-    );
+
+  async create(name: string, description: string): Promise<Specification> {
+    const specificationAlreadyExists =
+      this.specificationsRepository.findByName(name);
+
     if (specificationAlreadyExists) {
       throw new Error("Specification Already Exists.");
     }
 
-    this.specificationsRepository.create(specification);
+    const specification = await this.specificationsRepository.create(name, description);
+
+    return specification
   }
-  findByName(name: string): Specification {
+
+  async findByName(name: string): Promise<Specification> {
     const specificationAlreadyExists =
       this.specificationsRepository.findByName(name);
+
     if (!specificationAlreadyExists) {
       throw new Error("Specification not found.");
     }
     return specificationAlreadyExists;
   }
 
-  list(): Specification[] {
-    const listSpecifications = this.specificationsRepository.list();
+  async list(): Promise<Specification[]> {
+    const listSpecifications = await this.specificationsRepository.list();
     return listSpecifications;
   }
 }

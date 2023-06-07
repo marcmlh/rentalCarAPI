@@ -4,31 +4,30 @@ import { SpecificationService } from "../../services/SpecificationsService";
 
 class SpecificationController {
   constructor(private specificationsService: SpecificationService) {}
-  create(request: Request, response: Response) {
+
+  async create(request: Request, response: Response) {
     const { name, description } = request.body;
 
-    const specification = new Specification();
+    const specification = await this.specificationsService.create(
+      name,
+      description
+    );
 
-    Object.assign(specification, { name, description });
-
-    this.specificationsService.create(specification);
-
-    return response.status(201).json({data: specification});
+    return response.status(201).json({ data: specification });
   }
 
-  findByName(request: Request, response: Response) {
+  async list(request: Request, response: Response): Promise<Response> {
+    const listSpecifications = await this.specificationsService.list();
+    return response.status(200).json({ data: listSpecifications });
+  }
+
+  async findByName(request: Request, response: Response) {
     const { name } = request.body;
 
-    const specification = this.specificationsService.findByName(name);
+    const specification = await this.specificationsService.findByName(name);
 
     return response.status(200).json({ data: specification });
-
-  }
-
-  list(request: Request, response: Response) {
-    const listSpecifications = this.specificationsService.list();
-    return response.status(200).json({ data: listSpecifications });
   }
 }
 
-export{SpecificationController};
+export { SpecificationController };

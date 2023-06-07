@@ -4,28 +4,29 @@ import { Category } from "../../entities/Category";
 
 class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
+
   async create(request: Request, response: Response): Promise<Response> {
     const { name, description } = request.body;
 
     const category = await this.categoriesService.create(name, description);
 
-    return response.status(201).json({data: category});
+    return response.status(201).json({ data: category });
   }
 
-  /*
-  list(request: Request, response: Response): Response {
-    const listCategories = this.categoriesService.list();
+  async list(request: Request, response: Response): Promise<Response> {
+    const listCategories = await this.categoriesService.list();
     return response.status(200).json({ data: listCategories });
   }
 
-  findByName(request: Request, response: Response): Response {
+  async findByName(request: Request, response: Response): Promise<Response> {
     const { name } = request.body;
 
-    const category = this.categoriesService.findByName(name);
+    const category = await this.categoriesService.findByName(name);
 
     return response.status(200).json({ data: category });
   }
 
+  /*
   async import(request: Request, response: Response): Promise<Response> {
     const { file } = request;
 

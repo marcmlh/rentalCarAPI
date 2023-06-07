@@ -4,7 +4,7 @@ import { Category } from "../modules/cars/entities/Category";
 
 export const dataSource = new DataSource({
   type: "postgres",
-  port: 5434,
+  port: 5432,
   username: "marcelo",
   password: "1234",
   database: "rentalscar",
@@ -18,7 +18,7 @@ dataSource.initialize().then(async () => {
 }).catch((err)=> console.log(err))
 */
 
-export function createConnection(host = "database_rentalscar") { // Aqui caso estejmaos rodando o projeto no docker, como estamos fazendo o link dos dois containers rentx e database para que a API entenda o nome do container e consiga se comunicar em IP's diferentes, iremos passar o nome do database conforme definido no link do docker-compose. Caso rodemos o projeto localmente e não no container será passado como localhost
+export function createConnection(host = "database_rentalscar") { // Aqui caso estejamos rodando o projeto no docker, como estamos fazendo o link dos dois containers rentx e database para que a API entenda o nome do container e consiga se comunicar em IP's diferentes, iremos passar o nome do database conforme definido no link do docker-compose. Caso rodemos o projeto localmente e não no container será passado como localhost
   dataSource
     .setOptions({ host })
     .initialize()

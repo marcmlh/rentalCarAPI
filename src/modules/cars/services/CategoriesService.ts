@@ -3,6 +3,7 @@ import { Category } from "../entities/Category";
 import { parse as csvParse } from "csv-parse";
 import fs from "fs";
 import { CategoriesRepository } from "../repositories/CategoriesRepository";
+import { AppError } from "../../../helpers/AppError";
 
 class CategoriesService {
   constructor(private categoryRepository: CategoriesRepository) {}
@@ -13,30 +14,32 @@ class CategoriesService {
     );
 
     if (categoryAlreadyExists) {
-      throw new Error("Category Already Exists.");
+      throw new AppError("Category Already Exists.");
     }
 
     const category = await this.categoryRepository.create(name, description);
-    
-    return category
+
+    return category;
   }
 
-  /*
-  findByName(name: string): Category {
-    const categoryAlreadyExists = this.categoryRepository.findByName(name);
+  async findByName(name: string): Promise<Category> {
+    const categoryAlreadyExists = await this.categoryRepository.findByName(
+      name
+    );
 
     if (!categoryAlreadyExists) {
-      throw new Error("Category not found.");
+      throw new AppError("Category not found.");
     }
 
     return categoryAlreadyExists;
   }
 
-  list(): Category[] {
-    const listCategories = this.categoryRepository.list();
+  async list(): Promise<Category[]> {
+    const listCategories = await this.categoryRepository.list();
     return listCategories;
   }
 
+  /*
   loadCategories(file: Express.Multer.File) {
     // Transofrmação do arquivo e adicionar no banco   -- ESPERAR
     return new Promise<Category[]>((resolve, reject) => {
@@ -70,7 +73,8 @@ class CategoriesService {
         });
     });
   }
-
+  */
+  /*
   async import(file: Express.Multer.File): Promise<Category[]> {
     const importCategories = await this.loadCategories(file);
     return importCategories;

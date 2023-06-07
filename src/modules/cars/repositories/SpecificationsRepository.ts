@@ -1,24 +1,32 @@
+import { Repository } from "typeorm";
 import { Specification } from "../entities/Specification";
+import { dataSource } from "../../../database/data-source";
 
 class SpecificationsRepository {
-  specifications: Specification[];
+  private repository: Repository<Specification>;
   constructor() {
-    this.specifications = [];
+    this.repository = dataSource.getRepository(Specification);
   }
 
-  create(specification: Specification) {
-    this.specifications.push(specification);
-  }
+  async create(name: string, description: string): Promise<Specification> {
+    const specification = this.repository.create({ name, description });
 
-  findByName(name: string) {
-    const specification = this.specifications.find(
-      (name) => specification.name === name
-    );
+    await this.repository.save(specification);
+
     return specification;
   }
 
-  list(): Specification[] {
-    return this.specifications;
+  async findByName(name: string): Promise<Specification> {
+    const specification = await this.repository.findOneBy({ name });
+
+    return specification;
+  }
+
+
+  async list(): Promise<Specification[]> {
+    const specification = await this.repository.find();
+
+    return specification;
   }
 }
 
